@@ -1,5 +1,6 @@
 package com.lyz.helper;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 /**
@@ -65,15 +68,36 @@ public class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.AppInfoV
         public void onClick(View v) {
             int position = (int) v.getTag();
             final AppInfoBean appInfoBean = mData.get(position);
-            SfToastDialog.makeDialog(mContext, null, "确认卸载改App吗?", new SfToastDialog.OnToastDialogListener() {
+//            SfToastDialog.makeDialog(mContext, null, "确认卸载改App吗?", new SfToastDialog.OnToastDialogListener() {
+//                @Override
+//                public void onClick(SfToastDialog dialog, int btn) {
+//                    if (btn == right) {
+//                        CellInfoUtil.uninstallApk(mContext, appInfoBean.getPkgName());
+//                    }
+//                    dialog.dismiss();
+//                }
+//            }).show();
+
+
+            TimerTaskDialog.Builder builder = new TimerTaskDialog.Builder();
+            builder.setContent("确认卸载改App吗?").setLeftContent("取消").setRightContent("确定");
+            TimerTaskDialog.makeDialog(mContext, builder, new TimerTaskDialog.OnDialogClickListener() {
                 @Override
-                public void onClick(SfToastDialog dialog, int btn) {
-                    if (btn == right) {
+                public void onClick(TimerTaskDialog dialog, int btn) {
+                    if (btn == left) {
+                        Toast.makeText(mContext, "left", Toast.LENGTH_SHORT).show();
+                    } else {
                         CellInfoUtil.uninstallApk(mContext, appInfoBean.getPkgName());
+                        Toast.makeText(mContext, "right", Toast.LENGTH_SHORT).show();
                     }
                     dialog.dismiss();
                 }
-            }).show();
+
+                @Override
+                public void onTimeOver() {
+                    Toast.makeText(mContext, "onTimeOver", Toast.LENGTH_SHORT).show();
+                }
+            }, 3,  true).show();
         }
     }
     class AppInfoViewHolder extends RecyclerView.ViewHolder {
